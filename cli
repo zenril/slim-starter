@@ -1,0 +1,46 @@
+<?php
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Symfony\Component\Console\Application;
+use Doctrine\ORM\Version;
+use Dotenv\Dotenv;
+
+// Composer autoloader
+require __DIR__ . '/vendor/autoload.php';
+
+// App Helpers
+require __DIR__ . '/bootstrap/helpers.php';
+
+// Init Dotenv
+$dotenv = new Dotenv(__DIR__ . '/');
+$dotenv->load();
+
+// Instantiate the app
+$setting = require __DIR__ . '/bootstrap/settings.php';
+$settings = $setting['settings']['doctrine'];
+
+$config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
+    $settings['meta']['entity_path'],
+    $settings['meta']['auto_generate_proxies'],
+    $settings['meta']['proxy_dir'],
+    $settings['meta']['cache'],
+    false
+);
+
+$em = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+
+
+$helperSet = ConsoleRunner::createHelperSet($em);
+
+
+$cli = new Application('Doctrine Command Line Interface', Version::VERSION);
+$cli->setCatchExceptions(true);
+$cli->setHelperSet($helperSet);
+$cli->addCommands( $setting['settings']['commands'] );
+
+
+
+
+
+
+return  $cli->run();
+

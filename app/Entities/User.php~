@@ -1,0 +1,14 @@
+<?php
+
+use Doctrine\ORM\Mapping as ORM;
+
+/** @ORM\Entity */
+class User
+{
+    /** @ORM\Column(type="integer") */
+    private $id;
+    /** @ORM\Column(length=140) */
+    private $text;
+    /** @ORM\Column(type="datetime", name="posted_at") */
+    private $postedAt;
+}
